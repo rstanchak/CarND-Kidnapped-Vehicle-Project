@@ -24,7 +24,24 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	//   x, y, theta and their uncertainties from GPS) and all weights to 1. 
 	// Add random Gaussian noise to each particle.
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
+    std::default_random_engine generator;
+    std::normal_distribution<double> xdist(x, std[0]);
+    std::normal_distribution<double> ydist(y, std[1]);
+    std::normal_distribution<double> theta_dist(theta, std[2]);
 
+    this->num_particles = 1;
+    for(int i=0; i<this->num_particles; ++i)
+    {
+	Particle p = {
+	    .id = i,
+	    .x = xdist(generator),
+	    .y = ydist(generator),
+	    .theta = theta_dist(generator),
+	    .weight = 1 };
+	this->particles.push_back( p );
+	this->weights.push_back(1);
+    }
+    this->is_initialized = true;
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
@@ -85,8 +102,8 @@ Particle ParticleFilter::SetAssociations(Particle particle, std::vector<int> ass
 
 string ParticleFilter::getAssociations(Particle best)
 {
-	vector<int> v = best.associations;
-	stringstream ss;
+    vector<int> v = best.associations;
+    stringstream ss;
     copy( v.begin(), v.end(), ostream_iterator<int>(ss, " "));
     string s = ss.str();
     s = s.substr(0, s.length()-1);  // get rid of the trailing space
@@ -94,8 +111,8 @@ string ParticleFilter::getAssociations(Particle best)
 }
 string ParticleFilter::getSenseX(Particle best)
 {
-	vector<double> v = best.sense_x;
-	stringstream ss;
+    vector<double> v = best.sense_x;
+    stringstream ss;
     copy( v.begin(), v.end(), ostream_iterator<float>(ss, " "));
     string s = ss.str();
     s = s.substr(0, s.length()-1);  // get rid of the trailing space
@@ -103,8 +120,8 @@ string ParticleFilter::getSenseX(Particle best)
 }
 string ParticleFilter::getSenseY(Particle best)
 {
-	vector<double> v = best.sense_y;
-	stringstream ss;
+    vector<double> v = best.sense_y;
+    stringstream ss;
     copy( v.begin(), v.end(), ostream_iterator<float>(ss, " "));
     string s = ss.str();
     s = s.substr(0, s.length()-1);  // get rid of the trailing space
