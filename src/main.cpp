@@ -115,7 +115,7 @@ int main()
 		  pf.resample();
 
 		  // Calculate and output the average weighted error of the particle filter over all time steps so far.
-		  vector<Particle> particles = pf.particles;
+		  vector<Particle> particles = pf.getParticles();
 		  int num_particles = particles.size();
 		  double highest_weight = -1.0;
 		  Particle best_particle;
